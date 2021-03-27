@@ -228,10 +228,10 @@ class cobald::install {
           require  => File['/var/lib/cobald/.ssh'],
         }
         sshkey { $ssh_hostname:
-          key      => $ssh_pubhostkey,
-          target   => '/var/lib/cobald/.ssh/known_hosts',
-          type     => $ssh_hostkeytype,
-          require  => File['/var/lib/cobald/.ssh'],
+          key     => $ssh_pubhostkey,
+          target  => '/var/lib/cobald/.ssh/known_hosts',
+          type    => $ssh_hostkeytype,
+          require => File['/var/lib/cobald/.ssh'],
         }
         node_encrypt::file { "/var/lib/cobald/.ssh/id_${ssh_keytype}":
           mode     => '0600',
@@ -357,8 +357,8 @@ class cobald::install {
                 ],
       }
       cron::hourly { 'cobald_refreshproxy':
-        *       => $_proxy_renewal_config,
-        minute  => 0,
+        *      => $_proxy_renewal_config,
+        minute => 0,
       }
       cron::job { 'cobald_refreshproxy_on_reboot':
         *       => $_proxy_renewal_config,
@@ -388,7 +388,7 @@ class cobald::install {
         require => Exec['cobald_refreshproxy_once'],
       }
       if member($auth_lbs, 'ssh') {
-	ensure_packages(
+  ensure_packages(
           [
             'openssh-clients',
           ]
@@ -453,32 +453,32 @@ class cobald::install {
     ] + $redhat_7_deps,
   }
   ->python::pip { 'cobald':
-    ensure       => present,
-    pkgname      => $pip_cobald,
-    virtualenv   => $::cobald::params::virtualenv,
-    owner        => 'root',
-    timeout      => 1800,
-    require      => $piprequire,
-    *            => $cobald_repo_type ? {
-      'git' => { "url" => $cobald_url },
-      'pypi' => { "index" => $cobald_url },
+    ensure     => present,
+    pkgname    => $pip_cobald,
+    virtualenv => $::cobald::params::virtualenv,
+    owner      => 'root',
+    timeout    => 1800,
+    require    => $piprequire,
+    *          => $cobald_repo_type ? {
+      'git'  => { 'url' => $cobald_url },
+      'pypi' => { 'index' => $cobald_url },
     },
   }
   ->python::pip { 'cobald-tardis':
-    ensure       => present,
-    pkgname      => $pip_tardis,
-    virtualenv   => $::cobald::params::virtualenv,
-    owner        => 'root',
-    timeout      => 1800,
-    require      => $piprequire,
-    *            => $tardis_repo_type ? {
-      'git' => { "url" => $tardis_url },
-      'pypi' => { "index" => $tardis_url },
+    ensure     => present,
+    pkgname    => $pip_tardis,
+    virtualenv => $::cobald::params::virtualenv,
+    owner      => 'root',
+    timeout    => 1800,
+    require    => $piprequire,
+    *          => $tardis_repo_type ? {
+      'git'  => { 'url' => $tardis_url },
+      'pypi' => { 'index' => $tardis_url },
     },
   }
 
   # Handle cobald user/group
-  class { 'cobald::user': 
+  class { 'cobald::user':
     uid => $uid,
     gid => $gid,
   }
